@@ -1,0 +1,16 @@
+round_number,round_name,air_pollution_index,prediction,filename
+0,greatpark_newcastle,13.34,13.06,421497_570350.tif
+0,greatpark_newcastle,13.48,13.94,422458_571282.tif
+0,greatpark_newcastle,15.09,15.3,422452_570421.tif
+0,greatpark_newcastle,16.55,16.27,423514_570788.tif
+0,greatpark_newcastle,16.98,16.47,422446_569560.tif
+1,westminster_london,24.42,24.76,528352_177886.tif
+1,westminster_london,25.8,26.4,527824_179902.tif
+1,westminster_london,26.05,26.67,530486_178691.tif
+1,westminster_london,27.19,27.03,529102_179143.tif
+1,westminster_london,27.59,27.59,529211_180336.tif
+2,sheffield_city,16.78,16.98,435019_389178.tif
+2,sheffield_city,17.39,17.2,435965_386634.tif
+2,sheffield_city,17.72,17.6,435764_388658.tif
+2,sheffield_city,18.33,18.25,435438_387755.tif
+2,sheffield_city,19.98,19.89,436725_388741.tif
