@@ -3,7 +3,24 @@
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<style>
+			body,html{
+				padding:0px;
+				margin:0px;
+				width: 100vw;
+				height: 100vh;
+				font-family: "Arimo", sans-serif;
+				text-align:center;
+			}
+			h1,h2{
+				text-shadow: 3px 3px 2px rgba(72, 0, 0, 0.33);
+			}
+		</style>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

@@ -1,5 +1,8 @@
-export const tiles = [
+import type { Tile } from "./types";
+
+export const tiles: Array<Tile> = [
   {
+    "id": 0,
     "round_number": 0,
     "round_name": "greatpark_newcastle",
     "air_pollution_index": 13.34,
@@ -7,6 +10,7 @@ export const tiles = [
     "filename": "421497_570350.tif"
   },
   {
+    "id": 1,
     "round_number": 0,
     "round_name": "greatpark_newcastle",
     "air_pollution_index": 13.48,
@@ -14,6 +18,7 @@ export const tiles = [
     "filename": "422458_571282.tif"
   },
   {
+    "id": 2,
     "round_number": 0,
     "round_name": "greatpark_newcastle",
     "air_pollution_index": 15.09,
@@ -21,6 +26,7 @@ export const tiles = [
     "filename": "422452_570421.tif"
   },
   {
+    "id": 3,
     "round_number": 0,
     "round_name": "greatpark_newcastle",
     "air_pollution_index": 16.55,
@@ -28,6 +34,7 @@ export const tiles = [
     "filename": "423514_570788.tif"
   },
   {
+    "id": 4,
     "round_number": 0,
     "round_name": "greatpark_newcastle",
     "air_pollution_index": 16.98,
@@ -35,6 +42,7 @@ export const tiles = [
     "filename": "422446_569560.tif"
   },
   {
+    "id": 5,
     "round_number": 1,
     "round_name": "westminster_london",
     "air_pollution_index": 24.42,
@@ -42,6 +50,7 @@ export const tiles = [
     "filename": "528352_177886.tif"
   },
   {
+    "id": 6,
     "round_number": 1,
     "round_name": "westminster_london",
     "air_pollution_index": 25.8,
@@ -49,6 +58,7 @@ export const tiles = [
     "filename": "527824_179902.tif"
   },
   {
+    "id": 7,
     "round_number": 1,
     "round_name": "westminster_london",
     "air_pollution_index": 26.05,
@@ -56,6 +66,7 @@ export const tiles = [
     "filename": "530486_178691.tif"
   },
   {
+    "id": 8,
     "round_number": 1,
     "round_name": "westminster_london",
     "air_pollution_index": 27.19,
@@ -63,6 +74,7 @@ export const tiles = [
     "filename": "529102_179143.tif"
   },
   {
+    "id": 9,
     "round_number": 1,
     "round_name": "westminster_london",
     "air_pollution_index": 27.59,
@@ -70,6 +82,7 @@ export const tiles = [
     "filename": "529211_180336.tif"
   },
   {
+    "id": 10,
     "round_number": 2,
     "round_name": "sheffield_city",
     "air_pollution_index": 16.78,
@@ -77,6 +90,7 @@ export const tiles = [
     "filename": "435019_389178.tif"
   },
   {
+    "id": 11,
     "round_number": 2,
     "round_name": "sheffield_city",
     "air_pollution_index": 17.39,
@@ -84,6 +98,7 @@ export const tiles = [
     "filename": "435965_386634.tif"
   },
   {
+    "id": 12,
     "round_number": 2,
     "round_name": "sheffield_city",
     "air_pollution_index": 17.72,
@@ -91,6 +106,7 @@ export const tiles = [
     "filename": "435764_388658.tif"
   },
   {
+    "id": 13,
     "round_number": 2,
     "round_name": "sheffield_city",
     "air_pollution_index": 18.33,
@@ -98,6 +114,7 @@ export const tiles = [
     "filename": "435438_387755.tif"
   },
   {
+    "id": 14,
     "round_number": 2,
     "round_name": "sheffield_city",
     "air_pollution_index": 19.98,

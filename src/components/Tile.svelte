@@ -17,7 +17,11 @@
 	{#if showPrediction}
 		<p transition:fade={{ delay: 250, duration: 300 }}>
 			{prediction}
-			{isCorrect ? 'Correct' : 'Wrong'}
+			{#if isCorrect}
+				<span class="correct">Correct</span>
+			{:else}
+				<span class="wrong">Wrong</span>
+			{/if}
 		</p>
 	{/if}
 </div>
@@ -31,5 +35,12 @@
 	.tile-img {
 		width: 200px;
 		height: 200px;
+	}
+	.correct {
+		color: green;
+	}
+
+	.wrong {
+		color: red;
 	}
 </style>
