@@ -3,26 +3,31 @@
 	export interface TileProps {
 		file: string;
 		prediction: number;
+		value: number;
+		showResult: boolean;
 		showPrediction: boolean;
 		isCorrect: boolean;
 	}
 </script>
 
 <script lang="ts">
-	let { file, prediction, showPrediction, isCorrect } = $props<TileProps>();
+	let { file, prediction, showPrediction, showResult, value, isCorrect } = $props<TileProps>();
 </script>
 
 <div class="tile">
 	<img class="tile-img" src={`/images/${file}`} />
-	{#if showPrediction}
-		<p transition:fade={{ delay: 250, duration: 300 }}>
-			{prediction}
+	{#if showResult}
+		<div transition:fade={{ delay: 250, duration: 300 }} class="flex flex-column items-center">
 			{#if isCorrect}
-				<span class="correct">Correct</span>
+				<h2 class="correct">Correct</h2>
 			{:else}
-				<span class="wrong">Wrong</span>
+				<h2 class="wrong">Wrong</h2>
 			{/if}
-		</p>
+			{#if showPrediction}
+				<p class="my-1">AIs Prediction: {prediction}</p>
+				<p class="my-1">Actual val: {value}</p>
+			{/if}
+		</div>
 	{/if}
 </div>
 
@@ -38,6 +43,7 @@
 	}
 	.correct {
 		color: green;
+		font-weight: 700;
 	}
 
 	.wrong {

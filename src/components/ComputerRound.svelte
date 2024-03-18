@@ -2,19 +2,20 @@
 	import type { Tile as TileType } from '../types';
 	import Tile from '../components/Tile.svelte';
 	import { flip } from 'svelte/animate';
-	import { fade } from 'svelte/transition';
+	import { onMount } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
 
 	interface RoundProps {
 		tiles: Array<TileType>;
-		round_complete?: boolean;
-		roundNo: number;
-		onDone: () => void;
+		roundComplete?: boolean;
 	}
 
-	let { tiles, round_complete, roundNo, onDone } = $props<RoundProps>();
+	const dispatch = createEventDispatcher();
 
-	let current_order_guess = $state(tiles.sort((t) => Math.random() - 0.5));
-	let computer_guess = $state(tiles.sort((a, b) => (a.prediction > b.prediction ? 1 : -1)));
+	let { tiles, roundComplete } = $props<RoundProps>();
+	let current_order_guess = $state<Array<TileType> | null>(null);
+
+	let computer_guess = $derived(tiles.sort((a, b) => (a.prediction > b.prediction ? 1 : -1)));
 
 	let correct_order = $derived(
 		tiles.sort((a, b) => (a.air_pollution_index > b.air_pollution_index ? 1 : -1))
@@ -23,24 +24,54 @@
 	let correct_count = $derived(
 		computer_guess.filter((t, index) => t.id === correct_order.at(index)?.id).length
 	);
+
+	onMount(() => {
+		current_order_guess = [...tiles].sort((_) => Math.random() - 0.5);
+		let sorter = sort();
+
+		const intervalId = setInterval(() => {
+			let { done } = sorter.next();
+			if (done) {
+				dispatch('done', { score: correct_count });
+				clearInterval(intervalId);
+			}
+		}, 2000);
+	});
+
+	function* sort() {
+		if (!current_order_guess) {
+			throw 'tried to sort when current_order_guess is undefined';
+		}
+		for (let i = 0; i < current_order_guess.length - 1; i++) {
+			for (let j = i; j < current_order_guess.length; j++) {
+				if (current_order_guess[i].prediction > current_order_guess[j].prediction) {
+					const temp = current_order_guess[j];
+					current_order_guess[j] = current_order_guess[i];
+					current_order_guess[i] = temp;
+					yield;
+				}
+			}
+		}
+	}
 </script>
 
-<div class="round" in:fade={{ delay: 1000, duration: 1000 }}>
-	<h1>Computers guess</h1>
-	<div class="tiles">
-		{#each computer_guess as tile, index (tile.id)}
-			<div>
-				<Tile
-					isCorrect={tile.id === correct_order.at(index).id}
-					showPrediction={round_complete}
-					file={tile.filename.replace('.tif', '.png')}
-					prediction={tile.prediction}
-				/>
-			</div>
-		{/each}
-	</div>
-	{#if round_complete}
-		<p>Computer got {correct_count} out of {current_order_guess.length}</p>
+<div class="round">
+	<h2>AIs turn</h2>
+	{#if current_order_guess}
+		<div class="tiles">
+			{#each current_order_guess as tile, index (tile.id)}
+				<div animate:flip={{ duration: 600 }}>
+					<Tile
+						isCorrect={tile.id === correct_order.at(index).id}
+						showPrediction={true}
+						showResult={roundComplete}
+						file={tile.filename.replace('.tif', '.png')}
+						prediction={tile.prediction}
+						value={tile.air_pollution_index}
+					/>
+				</div>
+			{/each}
+		</div>
 	{/if}
 </div>
 

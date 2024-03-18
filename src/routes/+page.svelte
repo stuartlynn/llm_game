@@ -1,57 +1,122 @@
 <script lang="ts">
 	import { walk } from 'svelte/compiler';
 	import { tiles } from '../../src/rounds';
-	import Round from '../components/Round.svelte';
+	import UserRound from '../components/UserRound.svelte';
 	import Tile from '../components/Tile.svelte';
 	import ComputerRound from '../components/ComputerRound.svelte';
+	import { Confetti } from 'svelte-confetti';
+	import Celebration from '../components/Celebration.svelte';
 
-	//@ts-ignore
-	let containerEl;
+	let rounds = [0, 1, 2];
+	let phase = $state<'user' | 'computer' | 'result' | 'score'>('user');
 	let current_round = $state(0);
+	let scoreCard = $state<Array<{ userScore: number; computerScore: number }>>(
+		rounds.map((r) => ({ userScore: 0, computerScore: 0 }))
+	);
 
-	const scrollToBottom = async (node: any) => {
-		node.scroll({ top: node.scrollHeight, behavior: 'smooth' });
-	};
+	let tilesForRound = $derived(tiles.filter((t) => t.round_number === current_round));
+	let round_name = $derived(tilesForRound[0].round_name);
+	function userDone(score: number) {
+		console.log('user score ', score);
+		scoreCard[current_round].userScore = score;
+		phase = 'computer';
+	}
 
-	$effect(() => {
-		current_round;
-		console.log('scrolling');
-		setTimeout(() => {
-			//@ts-ignore
-			scrollToBottom(containerEl);
-		}, 1000);
-	});
+	function computerDone(score: number) {
+		scoreCard[current_round].computerScore = score;
+		phase = 'result';
+	}
 
 	function doneRound() {
-		current_round += 1;
+		if (current_round + 1 < rounds.length) {
+			console.log('next round');
+			phase = 'user';
+			current_round += 1;
+		} else {
+			console.log('scores');
+			phase = 'score';
+		}
 	}
-	let score = $state(0);
+
+	function reset() {
+		scoreCard = rounds.map((r) => ({ userScore: 0, computerScore: 0 }));
+		current_round = 0;
+		phase = 'user';
+	}
 </script>
 
-<div id="container" bind:this={containerEl}>
+<div id="container">
 	<h1>Are you smarter than a foundation model!</h1>
+	{#if phase !== 'score'}
+		<p>Put the tiles in the order of increasing air pollution</p>
 
-	<p>Put the tiles in the order of increasing air polution</p>
-	{#each [0, 1, 2] as round}
-		{#if round <= current_round}
-			<Round
-				roundNo={round + 1}
-				tiles={tiles.filter((t) => t.round_number === round)}
-				onDone={doneRound}
-			/>
+		{#if phase === 'result'}
+			{#if scoreCard[current_round].computerScore > scoreCard[current_round].userScore}
+				<h1 class="ai-win">AI wins again pitiful human!!!!</h1>
+			{:else if scoreCard[current_round].computerScore < scoreCard[current_round].userScore}
+				<h1 class="human-win">You won this round!</h1>
+				<Celebration />
+			{:else}
+				<h1 class="human-win">It's a draw (thats actually pretty good)</h1>
+				<Celebration />
+			{/if}
+			<button on:click={doneRound}>
+				{#if current_round + 1 === rounds.length}
+					See Final Scores
+				{:else}
+					Next Round!
+				{/if}
+			</button>
+		{:else}
+			<h2>Round {current_round + 1} : {round_name}</h2>
 		{/if}
-		{#if round < current_round}
+
+		<UserRound
+			roundNo={current_round}
+			tiles={tilesForRound}
+			on:done={(score) => userDone(score.detail.score)}
+			roundComplete={phase === 'result'}
+		/>
+
+		{#if ['computer', 'result'].includes(phase)}
 			<ComputerRound
-				onDone={() => {}}
-				roundNo={round + 1}
-				round_complete={true}
-				tiles={tiles.filter((t) => t.round_number === round)}
+				roundNo={current_round}
+				tiles={tilesForRound}
+				on:done={(score) => computerDone(score.detail.score)}
+				roundComplete={phase === 'result'}
 			/>
 		{/if}
-	{/each}
+	{/if}
+
+	{#if phase === 'score'}
+		<div class="score_card">
+			<h1>Scores</h1>
+			{#each rounds as round, index}
+				<h1>
+					Round {index + 1}:
+					{#if scoreCard[current_round].computerScore > scoreCard[current_round].userScore}
+						<span class="ai-win">AI won</span>
+					{:else if scoreCard[current_round].computerScore < scoreCard[current_round].userScore}
+						<span class="human-win">You won</span>
+						<Celebration />
+					{:else}
+						<span class="human-win">Draw</span>
+						<Celebration />
+					{/if}
+				</h1>
+			{/each}
+			<button on:click={() => reset()}>Try again?</button>
+		</div>
+	{/if}
 </div>
 
 <style>
+	.ai-win {
+		color: red;
+	}
+	.human-win {
+		color: green;
+	}
 	#container {
 		width: 100vw;
 		height: 100vh;
@@ -60,5 +125,15 @@
 		padding: 2rem;
 		box-sizing: border-box;
 		overflow-y: auto;
+	}
+	button {
+		margin: 20px;
+		background-color: #e1341e;
+		color: white;
+		font-weight: bold;
+		border-radius: 1.2rem;
+		padding: 10px 20px;
+		box-sizing: border-box;
+		border: none;
 	}
 </style>

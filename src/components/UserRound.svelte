@@ -5,22 +5,23 @@
 	import { dndzone } from 'svelte-dnd-action';
 	import { flip } from 'svelte/animate';
 	import { fade } from 'svelte/transition';
+	import { createEventDispatcher } from 'svelte';
 
 	interface RoundProps {
 		tiles: Array<TileType>;
-		round_complete?: boolean;
-		roundNo: number;
-		onDone: () => void;
+		roundComplete?: boolean;
 	}
 
+	const dispatch = createEventDispatcher();
 	const flipDurationMs = 300;
 
-	let { tiles, round_complete, roundNo, onDone } = $props<RoundProps>();
+	let { tiles, roundComplete, onDone } = $props<RoundProps>();
+	let submitted = $state(false);
 
-	let name = $derived(tiles.at(0)?.round_name);
 	let current_order_guess = $state<Array<TileType> | null>(null);
 
-	onMount(() => {
+	$effect(() => {
+		submitted = false;
 		current_order_guess = tiles.sort((t) => Math.random() - 0.5);
 	});
 
@@ -41,14 +42,14 @@
 	}
 
 	function submit() {
-		round_complete = true;
-		onDone();
+		submitted = true;
+		dispatch('done', { score: correct_count });
 	}
 </script>
 
 {#if current_order_guess}
 	<div class="round" in:fade={{ delay: 2000, duration: 1000 }}>
-		<h1>Round {roundNo} : {name}</h1>
+		<h2>Your Guess</h2>
 		<div
 			use:dndzone={{ items: current_order_guess, flipDurationMs }}
 			class="tiles"
@@ -60,19 +61,17 @@
 					<Tile
 						id={tile.id}
 						isCorrect={tile.id === correct_order.at(index).id}
-						showPrediction={round_complete}
+						showResult={roundComplete}
+						showPrediction={false}
 						file={tile.filename.replace('.tif', '.png')}
-						prediction={tile.air_pollution_index}
+						prediction={tile.prediction}
+						value={tile.air_pollution_index}
 					/>
 				</div>
 			{/each}
 		</div>
-		{#if !round_complete}
+		{#if !submitted}
 			<button on:click={submit}>This is my guess</button>
-		{:else if correct_count === current_order_guess.length}
-			<p>Wow! you got them all right</p>
-		{:else}
-			<p>Unfortuently you only got {correct_count} out of {current_order_guess.length}</p>
 		{/if}
 	</div>
 {:else}
