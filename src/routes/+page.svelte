@@ -7,15 +7,24 @@
 	import { Confetti } from 'svelte-confetti';
 	import Celebration from '../components/Celebration.svelte';
 
-	let rounds = [0, 1, 2];
+	let maxRoundNo = Math.max(...tiles.map((t) => t.round_number));
+	let rounds = $state([
+		Math.floor(Math.random() * maxRoundNo),
+		Math.floor(Math.random() * maxRoundNo),
+		Math.floor(Math.random() * maxRoundNo)
+	]);
+
+	console.log('max round No ', maxRoundNo, rounds);
+
 	let phase = $state<'user' | 'computer' | 'result' | 'score'>('user');
 	let current_round = $state(0);
 	let scoreCard = $state<Array<{ userScore: number; computerScore: number }>>(
 		rounds.map((r) => ({ userScore: 0, computerScore: 0 }))
 	);
 
-	let tilesForRound = $derived(tiles.filter((t) => t.round_number === current_round));
-	let round_name = $derived(tilesForRound[0].round_name);
+	let tilesForRound = $derived(tiles.filter((t) => t.round_number === rounds[current_round]));
+	console.log(tilesForRound);
+
 	function userDone(score: number) {
 		console.log('user score ', score);
 		scoreCard[current_round].userScore = score;
@@ -39,6 +48,11 @@
 	}
 
 	function reset() {
+		rounds = [
+			Math.floor(Math.random() * maxRoundNo),
+			Math.floor(Math.random() * maxRoundNo),
+			Math.floor(Math.random() * maxRoundNo)
+		];
 		scoreCard = rounds.map((r) => ({ userScore: 0, computerScore: 0 }));
 		current_round = 0;
 		phase = 'user';
@@ -68,7 +82,7 @@
 				{/if}
 			</button>
 		{:else}
-			<h2>Round {current_round + 1} : {round_name}</h2>
+			<h2>Round {current_round + 1}</h2>
 		{/if}
 
 		<UserRound
