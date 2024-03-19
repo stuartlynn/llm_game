@@ -109,12 +109,12 @@
 				<h1>
 					Round {index + 1}:
 					{#if scoreCard[current_round].computerScore > scoreCard[current_round].userScore}
-						<span class="ai-win">AI won</span>
+						<span class="ai-win">AI won {scoreCard[current_round].computerScore}–{scoreCard[current_round].userScore}</span>
 					{:else if scoreCard[current_round].computerScore < scoreCard[current_round].userScore}
-						<span class="human-win">You won</span>
+						<span class="human-win">You won {scoreCard[current_round].userScore}–{scoreCard[current_round].computerScore}</span>
 						<Celebration />
 					{:else}
-						<span class="human-win">Draw</span>
+						<span class="human-win">Draw {scoreCard[current_round].userScore}–{scoreCard[current_round].computerScore}</span>
 						<Celebration />
 					{/if}
 				</h1>
