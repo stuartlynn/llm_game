@@ -26,6 +26,13 @@
 	);
     console.log('computer score ', correct_count);
 
+    function getPredictedRank(tile: TileType) {
+        return computer_guess.findIndex((t) => t.id === tile.id);
+    }
+    function getCorrectRank(tile: TileType) {
+        return correct_order.findIndex((t) => t.id === tile.id);
+    }
+
 	onMount(() => {
 		current_order_guess = [...tiles].sort((_) => Math.random() - 0.5);
 		let sorter = sort();
@@ -63,12 +70,13 @@
 			{#each current_order_guess as tile, index (tile.id)}
 				<div animate:flip={{ duration: 600 }}>
 					<Tile
-						isCorrect={tile.id === correct_order.at(index).id}
 						showPrediction={true}
 						showResult={roundComplete}
 						file={tile.filename.replace('.tif', '.png')}
 						prediction={tile.prediction}
 						value={tile.air_pollution_index}
+                        predictedRank={getPredictedRank(tile)}
+                        actualRank={getCorrectRank(tile)}
 					/>
 				</div>
 			{/each}

@@ -44,6 +44,10 @@
 		submitted = true;
 		dispatch('done', { score: correct_count });
 	}
+
+    function getCorrectRank(tile: TileType) {
+        return correct_order.findIndex((t) => t.id === tile.id);
+    }
 </script>
 
 {#if current_order_guess}
@@ -65,6 +69,8 @@
 						file={tile.filename.replace('.tif', '.png')}
 						prediction={tile.prediction}
 						value={tile.air_pollution_index}
+                        predictedRank={index}
+                        actualRank={getCorrectRank(tile)}
 					/>
 				</div>
 			{/each}
