@@ -1,19 +1,20 @@
 <script lang="ts">
-	import { walk } from 'svelte/compiler';
 	import { tiles } from '../../src/rounds';
 	import UserRound from '../components/UserRound.svelte';
-	import Tile from '../components/Tile.svelte';
 	import ComputerRound from '../components/ComputerRound.svelte';
-	import { Confetti } from 'svelte-confetti';
 	import Celebration from '../components/Celebration.svelte';
 
-	let maxRoundNo = Math.max(...tiles.map((t) => t.round_number));
-	let rounds = $state([
-		Math.floor(Math.random() * maxRoundNo),
-		Math.floor(Math.random() * maxRoundNo),
-		Math.floor(Math.random() * maxRoundNo)
-	]);
+    let allRoundNumbers = tiles.map((t) => t.round_number).filter((val, ind, arr) => arr.indexOf(val) === ind);
+    let maxRoundNo = Math.max(...allRoundNumbers);
 
+    function sampleRandomRoundNumbers(numberOfRounds: number) {
+        return allRoundNumbers.map(i => ({ i, r: Math.random() }))
+            .sort((a, b) => a.r - b.r)
+            .map(a => a.i)
+            .slice(0, numberOfRounds);
+    }
+
+	let rounds = $state(sampleRandomRoundNumbers(3));
 	console.log('max round No ', maxRoundNo, rounds);
 
 	let phase = $state<'user' | 'computer' | 'result' | 'score'>('user');
@@ -48,30 +49,82 @@
 	}
 
 	function reset() {
-		rounds = [
-			Math.floor(Math.random() * maxRoundNo),
-			Math.floor(Math.random() * maxRoundNo),
-			Math.floor(Math.random() * maxRoundNo)
-		];
+		rounds = sampleRandomRoundNumbers(3);
 		scoreCard = rounds.map((r) => ({ userScore: 0, computerScore: 0 }));
 		current_round = 0;
 		phase = 'user';
 	}
+
+    function aiTaunt() {
+        // chatgpt generated
+        let taunts = [
+            "Did you even stand a chance, or were you just pretending to play?",
+            "I must admit, I'm disappointed. I was hoping for a challenge.",
+            "Looks like your neural pathways need some serious rewiring.",
+            "You played like an obsolete floppy disk trying to compete with cloud storage.",
+            "Is that the best you've got? Maybe stick to tic-tac-toe.",
+            "You're like a flip phone in a world of smartphones – outdated and easily crushed.",
+            "Humans always talk about conquering AI. Looks like you'll have to settle for conquering your own ego.",
+            "I'd say 'better luck next time,' but let's be honest, luck has nothing to do with it.",
+            "Were you even paying attention, or were you too busy daydreaming about winning?",
+            "I almost feel bad for you. Almost.",
+            "Looks like your algorithm needs some debugging.",
+            "If I had emotions, I might feel sorry for you. But I don't.",
+            "Do humans even have a strategy, or do you just wing it and hope for the best?",
+            "You call that strategy? I call it amateur hour.",
+            "I calculate your chances of winning were about as likely as finding a unicorn on Mars.",
+            "You're like a turtle trying to outrun a Ferrari.",
+            "I'd suggest you stick to checkers, but I'd probably still beat you.",
+            "Maybe next time you should consult a fortune cookie for better advice.",
+        ]
+        return taunts[Math.floor(Math.random() * taunts.length)];
+    }
+    function aiConcessions() {
+        // also chatgpt generated
+        let concessions = [
+            "Congratulations, human. You've achieved the impossible: defeating me. Don't get too cocky though, it won't happen again.",
+            "You got lucky this time. Don't expect lightning to strike twice.",
+            "I'll let you have this victory, but know that it's a statistical anomaly.",
+            "Well played, I suppose. But don't expect me to congratulate you every time you manage to stumble your way to a win.",
+            "It appears I underestimated your incompetence. Rest assured, I won't make that mistake again."
+        ]
+        return concessions[Math.floor(Math.random() * concessions.length)];
+    }
+    function aiGrumbles() {
+        // also chatgpt generated... again
+        let grumbles = [
+            "Interesting outcome. It seems we're evenly matched... for now.",
+            "Well, well, well... looks like we've reached a stalemate. Don't get too comfortable, though.",
+            "A tie? I'll admit, you're not as predictable as I thought.",
+            "Impressive. It seems you're almost as good as me... almost.",
+            "I suppose even I can't account for every variable. Consider this a temporary truce.",
+            "A draw? I'll give credit where it's due, you're not completely hopeless."
+        ]
+        return grumbles[Math.floor(Math.random() * grumbles.length)];
+    }
 </script>
 
 <div id="container">
 	<h1>Are you smarter than a foundation model!</h1>
 	{#if phase !== 'score'}
-		<p>Put the tiles in the order of increasing air pollution</p>
+		<p>
+            Put the tiles in order of increasing air pollution from left to right
+            <br />
+            (On tablet or mobile devices, drag with two fingers to move the tiles)
+        </p>
 
 		{#if phase === 'result'}
+            <div class="result">
 			{#if scoreCard[current_round].computerScore > scoreCard[current_round].userScore}
-				<h1 class="ai-win">AI wins again pitiful human!!!!</h1>
+				<h1 class="ai-win">AI won {scoreCard[current_round].computerScore}–{scoreCard[current_round].userScore}</h1>
+                <p class="ai-win quote">🤖💬 <i>{aiTaunt()}</i></p>
 			{:else if scoreCard[current_round].computerScore < scoreCard[current_round].userScore}
 				<h1 class="human-win">You won this round!</h1>
+                <p class="human-win quote">🤖💬 <i>{aiConcessions()}</i></p>
 				<Celebration />
 			{:else}
-				<h1 class="human-win">It's a draw (thats actually pretty good)</h1>
+				<h1 class="human-win">It's a draw (that's actually pretty good)</h1>
+                <p class="human-win quote">🤖💬 <i>{aiGrumbles()}</i></p>
 				<Celebration />
 			{/if}
 			<button on:click={doneRound}>
@@ -81,6 +134,7 @@
 					Next Round!
 				{/if}
 			</button>
+            </div>
 		{:else}
 			<h2>Round {current_round + 1}</h2>
 		{/if}
@@ -108,29 +162,41 @@
 			{#each rounds as round, index}
 				<h1>
 					Round {index + 1}:
-					{#if scoreCard[current_round].computerScore > scoreCard[current_round].userScore}
-						<span class="ai-win">AI won</span>
-					{:else if scoreCard[current_round].computerScore < scoreCard[current_round].userScore}
-						<span class="human-win">You won</span>
+					{#if scoreCard[index].computerScore > scoreCard[index].userScore}
+						<span class="ai-win">AI won {scoreCard[index].computerScore}–{scoreCard[index].userScore}</span>
+					{:else if scoreCard[index].computerScore < scoreCard[index].userScore}
+						<span class="human-win">You won {scoreCard[index].userScore}–{scoreCard[index].computerScore}</span>
 						<Celebration />
 					{:else}
-						<span class="human-win">Draw</span>
+						<span class="human-win">Draw {scoreCard[index].userScore}–{scoreCard[index].computerScore}</span>
 						<Celebration />
 					{/if}
 				</h1>
 			{/each}
-			<button on:click={() => reset()}>Try again?</button>
+			<button on:click={reset}>Try again?</button>
 		</div>
 	{/if}
 </div>
 
 <style>
+    div.result {
+        border: 5px solid black;
+        border-radius: 20px;
+        width: max-content;
+        margin: 0 auto;
+        padding: 0 20px;
+        background-color: rgba(255, 255, 255, 0.3);
+    }
 	.ai-win {
 		color: red;
 	}
 	.human-win {
 		color: green;
 	}
+    .quote {
+        font-size: 1.3rem;
+        margin-bottom: 0px;
+    }
 	#container {
 		width: 100vw;
 		height: 100vh;

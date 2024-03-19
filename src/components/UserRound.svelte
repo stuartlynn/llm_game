@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import type { Tile as TileType } from '../types';
 	import Tile from '../components/Tile.svelte';
 	import { dndzone } from 'svelte-dnd-action';
@@ -15,7 +14,7 @@
 	const dispatch = createEventDispatcher();
 	const flipDurationMs = 300;
 
-	let { tiles, roundComplete, onDone } = $props<RoundProps>();
+	let { tiles, roundComplete } = $props<RoundProps>();
 	let submitted = $state(false);
 
 	let current_order_guess = $state<Array<TileType> | null>(null);
@@ -26,7 +25,7 @@
 	});
 
 	let correct_order = $derived(
-		tiles.sort((a, b) => (a.air_pollution_index > b.air_pollution_index ? 1 : -1))
+		[...tiles].sort((a, b) => (a.air_pollution_index > b.air_pollution_index ? 1 : -1))
 	);
 
 	let correct_count = $derived(
@@ -45,13 +44,17 @@
 		submitted = true;
 		dispatch('done', { score: correct_count });
 	}
+
+    function getCorrectRank(tile: TileType) {
+        return correct_order.findIndex((t) => t.id === tile.id);
+    }
 </script>
 
 {#if current_order_guess}
-	<div class="round" in:fade={{ delay: 2000, duration: 1000 }}>
+	<div class="round" in:fade={{ delay: 1000, duration: 1000 }}>
 		<h2>Your Guess</h2>
 		<div
-			use:dndzone={{ items: current_order_guess, flipDurationMs }}
+			use:dndzone={{ items: current_order_guess, flipDurationMs, dragDisabled: submitted }}
 			class="tiles"
 			on:consider={handleDndConsider}
 			on:finalize={handleDndFinalize}
@@ -66,6 +69,8 @@
 						file={tile.filename.replace('.tif', '.png')}
 						prediction={tile.prediction}
 						value={tile.air_pollution_index}
+                        predictedRank={index}
+                        actualRank={getCorrectRank(tile)}
 					/>
 				</div>
 			{/each}

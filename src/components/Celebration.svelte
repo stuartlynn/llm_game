@@ -14,5 +14,5 @@
  overflow: hidden;
  pointer-events: none;"
 >
-	<Confetti x={[-5, 5]} y={[0, 0.1]} infinite duration={5000} amount={500} fallDistance="100vh" />
+	<Confetti x={[-5, 5]} y={[0, 0.1]} infinite duration={2000} amount={250} fallDistance="100vh" />
 </div>
