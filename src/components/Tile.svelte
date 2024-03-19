@@ -24,8 +24,8 @@
 				<h2 class="wrong">Wrong</h2>
 			{/if}
 			{#if showPrediction}
-				<p class="my-1">AIs Prediction: {prediction}</p>
-				<p class="my-1">Actual val: {value}</p>
+				<p class="my-1">AI's Prediction: {prediction.toFixed(3)}</p>
+				<p class="my-1">Actual Value: {value.toFixed(3)}</p>
 			{/if}
 		</div>
 	{/if}

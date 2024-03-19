@@ -56,7 +56,7 @@
 </script>
 
 <div class="round">
-	<h2>AIs turn</h2>
+	<h2>AI's turn</h2>
 	{#if current_order_guess}
 		<div class="tiles">
 			{#each current_order_guess as tile, index (tile.id)}

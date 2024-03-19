@@ -71,7 +71,7 @@
 				<h1 class="human-win">You won this round!</h1>
 				<Celebration />
 			{:else}
-				<h1 class="human-win">It's a draw (thats actually pretty good)</h1>
+				<h1 class="human-win">It's a draw (that's actually pretty good)</h1>
 				<Celebration />
 			{/if}
 			<button on:click={doneRound}>
