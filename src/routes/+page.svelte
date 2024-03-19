@@ -17,8 +17,7 @@
 			.slice(0, numberOfRounds);
 	}
 
-	//	let rounds = $state(sampleRandomRoundNumbers(3));
-	let rounds = $state([110, 71, 1]);
+	let rounds = $state(sampleRandomRoundNumbers(3));
 	console.log('max round No ', maxRoundNo, rounds);
 
 	let phase = $state<'user' | 'computer' | 'result' | 'score'>('user');
