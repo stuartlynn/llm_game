@@ -77,7 +77,6 @@
             "You're like a turtle trying to outrun a Ferrari.",
             "I'd suggest you stick to checkers, but I'd probably still beat you.",
             "Maybe next time you should consult a fortune cookie for better advice.",
-            "Was that your best effort, or were you just stalling for time?",
         ]
         return taunts[Math.floor(Math.random() * taunts.length)];
     }
@@ -92,7 +91,7 @@
             <div class="result">
 			{#if scoreCard[current_round].computerScore > scoreCard[current_round].userScore}
 				<h1 class="ai-win">AI won {scoreCard[current_round].computerScore}–{scoreCard[current_round].userScore}</h1>
-                <p class="ai-win quote">🤖: <i>{aiTaunt()}</i></p>
+                <p class="ai-win quote">🤖💬 <i>{aiTaunt()}</i></p>
 			{:else if scoreCard[current_round].computerScore < scoreCard[current_round].userScore}
 				<h1 class="human-win">You won this round!</h1>
 				<Celebration />
@@ -135,13 +134,13 @@
 			{#each rounds as round, index}
 				<h1>
 					Round {index + 1}:
-					{#if scoreCard[current_round].computerScore > scoreCard[current_round].userScore}
-						<span class="ai-win">AI won {scoreCard[current_round].computerScore}–{scoreCard[current_round].userScore}</span>
-					{:else if scoreCard[current_round].computerScore < scoreCard[current_round].userScore}
-						<span class="human-win">You won {scoreCard[current_round].userScore}–{scoreCard[current_round].computerScore}</span>
+					{#if scoreCard[index].computerScore > scoreCard[index].userScore}
+						<span class="ai-win">AI won {scoreCard[index].computerScore}–{scoreCard[index].userScore}</span>
+					{:else if scoreCard[index].computerScore < scoreCard[index].userScore}
+						<span class="human-win">You won {scoreCard[index].userScore}–{scoreCard[index].computerScore}</span>
 						<Celebration />
 					{:else}
-						<span class="human-win">Draw {scoreCard[current_round].userScore}–{scoreCard[current_round].computerScore}</span>
+						<span class="human-win">Draw {scoreCard[index].userScore}–{scoreCard[index].computerScore}</span>
 						<Celebration />
 					{/if}
 				</h1>

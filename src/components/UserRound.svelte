@@ -25,7 +25,7 @@
 	});
 
 	let correct_order = $derived(
-		tiles.sort((a, b) => (a.air_pollution_index > b.air_pollution_index ? 1 : -1))
+		[...tiles].sort((a, b) => (a.air_pollution_index > b.air_pollution_index ? 1 : -1))
 	);
 
 	let correct_count = $derived(

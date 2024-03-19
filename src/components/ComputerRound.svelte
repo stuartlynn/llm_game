@@ -15,15 +15,16 @@
 	let { tiles, roundComplete } = $props<RoundProps>();
 	let current_order_guess = $state<Array<TileType> | null>(null);
 
-	let computer_guess = $derived(tiles.sort((a, b) => (a.prediction > b.prediction ? 1 : -1)));
+	let computer_guess = $derived([...tiles].sort((a, b) => (a.prediction > b.prediction ? 1 : -1)));
 
 	let correct_order = $derived(
-		tiles.sort((a, b) => (a.air_pollution_index > b.air_pollution_index ? 1 : -1))
+		[...tiles].sort((a, b) => (a.air_pollution_index > b.air_pollution_index ? 1 : -1))
 	);
 
 	let correct_count = $derived(
 		computer_guess.filter((t, index) => t.id === correct_order.at(index)?.id).length
 	);
+    console.log('computer score ', correct_count);
 
 	onMount(() => {
 		current_order_guess = [...tiles].sort((_) => Math.random() - 0.5);
