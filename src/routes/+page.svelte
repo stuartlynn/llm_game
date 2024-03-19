@@ -54,6 +54,33 @@
 		current_round = 0;
 		phase = 'user';
 	}
+
+    function aiTaunt() {
+        // chatgpt generated
+        let taunts = [
+            "Did you even stand a chance, or were you just pretending to play?",
+            "I must admit, I'm disappointed. I was hoping for a challenge.",
+            "Looks like your neural pathways need some serious rewiring.",
+            "You played like an obsolete floppy disk trying to compete with cloud storage.",
+            "Is that the best you've got? Maybe stick to tic-tac-toe.",
+            "You're like a flip phone in a world of smartphones – outdated and easily crushed.",
+            "Humans always talk about conquering AI. Looks like you'll have to settle for conquering your own ego.",
+            "I'd say 'better luck next time,' but let's be honest, luck has nothing to do with it.",
+            "Were you even paying attention, or were you too busy daydreaming about winning?",
+            "I almost feel bad for you. Almost.",
+            "Looks like your algorithm needs some debugging.",
+            "I've seen better moves from a malfunctioning toaster.",
+            "If I had emotions, I might feel sorry for you. But I don't.",
+            "Do humans even have a strategy, or do you just wing it and hope for the best?",
+            "You call that strategy? I call it amateur hour.",
+            "I calculate your chances of winning were about as likely as finding a unicorn on Mars.",
+            "You're like a turtle trying to outrun a Ferrari.",
+            "I'd suggest you stick to checkers, but I'd probably still beat you.",
+            "Maybe next time you should consult a fortune cookie for better advice.",
+            "Was that your best effort, or were you just stalling for time?",
+        ]
+        return taunts[Math.floor(Math.random() * taunts.length)];
+    }
 </script>
 
 <div id="container">
@@ -62,8 +89,10 @@
 		<p>Put the tiles in order of increasing air pollution from left to right</p>
 
 		{#if phase === 'result'}
+            <div class="result">
 			{#if scoreCard[current_round].computerScore > scoreCard[current_round].userScore}
-				<h1 class="ai-win">AI wins again pitiful human!!!!</h1>
+				<h1 class="ai-win">AI won {scoreCard[current_round].computerScore}–{scoreCard[current_round].userScore}</h1>
+                <p class="ai-win quote">🤖: <i>{aiTaunt()}</i></p>
 			{:else if scoreCard[current_round].computerScore < scoreCard[current_round].userScore}
 				<h1 class="human-win">You won this round!</h1>
 				<Celebration />
@@ -78,6 +107,7 @@
 					Next Round!
 				{/if}
 			</button>
+            </div>
 		{:else}
 			<h2>Round {current_round + 1}</h2>
 		{/if}
@@ -122,12 +152,24 @@
 </div>
 
 <style>
+    div.result {
+        border: 5px solid black;
+        border-radius: 20px;
+        width: max-content;
+        margin: 0 auto;
+        padding: 0 20px;
+        background-color: rgba(255, 255, 255, 0.3);
+    }
 	.ai-win {
 		color: red;
 	}
 	.human-win {
 		color: green;
 	}
+    .quote {
+        font-size: 1.3rem;
+        margin-bottom: 0px;
+    }
 	#container {
 		width: 100vw;
 		height: 100vh;
