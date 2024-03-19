@@ -1,10 +1,7 @@
 <script lang="ts">
-	import { walk } from 'svelte/compiler';
 	import { tiles } from '../../src/rounds';
 	import UserRound from '../components/UserRound.svelte';
-	import Tile from '../components/Tile.svelte';
 	import ComputerRound from '../components/ComputerRound.svelte';
-	import { Confetti } from 'svelte-confetti';
 	import Celebration from '../components/Celebration.svelte';
 
 	let maxRoundNo = Math.max(...tiles.map((t) => t.round_number));
@@ -62,7 +59,7 @@
 <div id="container">
 	<h1>Are you smarter than a foundation model!</h1>
 	{#if phase !== 'score'}
-		<p>Put the tiles in the order of increasing air pollution</p>
+		<p>Put the tiles in order of increasing air pollution from left to right</p>
 
 		{#if phase === 'result'}
 			{#if scoreCard[current_round].computerScore > scoreCard[current_round].userScore}
@@ -119,7 +116,7 @@
 					{/if}
 				</h1>
 			{/each}
-			<button on:click={() => reset()}>Try again?</button>
+			<button on:click={reset}>Try again?</button>
 		</div>
 	{/if}
 </div>
