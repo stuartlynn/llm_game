@@ -4,13 +4,17 @@
 	import ComputerRound from '../components/ComputerRound.svelte';
 	import Celebration from '../components/Celebration.svelte';
 
-	let maxRoundNo = Math.max(...tiles.map((t) => t.round_number));
-	let rounds = $state([
-		Math.floor(Math.random() * maxRoundNo),
-		Math.floor(Math.random() * maxRoundNo),
-		Math.floor(Math.random() * maxRoundNo)
-	]);
+    let allRoundNumbers = tiles.map((t) => t.round_number).filter((val, ind, arr) => arr.indexOf(val) === ind);
+    let maxRoundNo = Math.max(...allRoundNumbers);
 
+    function sampleRandomRoundNumbers(numberOfRounds: number) {
+        return allRoundNumbers.map(i => ({ i, r: Math.random() }))
+            .sort((a, b) => a.r - b.r)
+            .map(a => a.i)
+            .slice(0, numberOfRounds);
+    }
+
+	let rounds = $state(sampleRandomRoundNumbers(3));
 	console.log('max round No ', maxRoundNo, rounds);
 
 	let phase = $state<'user' | 'computer' | 'result' | 'score'>('user');
@@ -45,11 +49,7 @@
 	}
 
 	function reset() {
-		rounds = [
-			Math.floor(Math.random() * maxRoundNo),
-			Math.floor(Math.random() * maxRoundNo),
-			Math.floor(Math.random() * maxRoundNo)
-		];
+		rounds = sampleRandomRoundNumbers(3);
 		scoreCard = rounds.map((r) => ({ userScore: 0, computerScore: 0 }));
 		current_round = 0;
 		phase = 'user';
