@@ -51,7 +51,7 @@
 	<div class="round" in:fade={{ delay: 2000, duration: 1000 }}>
 		<h2>Your Guess</h2>
 		<div
-			use:dndzone={{ items: current_order_guess, flipDurationMs }}
+			use:dndzone={{ items: current_order_guess, flipDurationMs, dragDisabled: submitted }}
 			class="tiles"
 			on:consider={handleDndConsider}
 			on:finalize={handleDndFinalize}
