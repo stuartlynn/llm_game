@@ -79,6 +79,29 @@
         ]
         return taunts[Math.floor(Math.random() * taunts.length)];
     }
+    function aiConcessions() {
+        // also chatgpt generated
+        let concessions = [
+            "Congratulations, human. You've achieved the impossible: defeating me. Don't get too cocky though, it won't happen again.",
+            "You got lucky this time. Don't expect lightning to strike twice.",
+            "I'll let you have this victory, but know that it's a statistical anomaly.",
+            "Well played, I suppose. But don't expect me to congratulate you every time you manage to stumble your way to a win.",
+            "It appears I underestimated your incompetence. Rest assured, I won't make that mistake again."
+        ]
+        return concessions[Math.floor(Math.random() * concessions.length)];
+    }
+    function aiGrumbles() {
+        // also chatgpt generated... again
+        let grumbles = [
+            "Interesting outcome. It seems we're evenly matched... for now.",
+            "Well, well, well... looks like we've reached a stalemate. Don't get too comfortable, though.",
+            "A tie? I'll admit, you're not as predictable as I thought.",
+            "Impressive. It seems you're almost as good as me... almost.",
+            "I suppose even I can't account for every variable. Consider this a temporary truce.",
+            "A draw? I'll give credit where it's due, you're not completely hopeless."
+        ]
+        return grumbles[Math.floor(Math.random() * grumbles.length)];
+    }
 </script>
 
 <div id="container">
@@ -97,9 +120,11 @@
                 <p class="ai-win quote">🤖💬 <i>{aiTaunt()}</i></p>
 			{:else if scoreCard[current_round].computerScore < scoreCard[current_round].userScore}
 				<h1 class="human-win">You won this round!</h1>
+                <p class="human-win quote">🤖💬 <i>{aiConcessions()}</i></p>
 				<Celebration />
 			{:else}
 				<h1 class="human-win">It's a draw (that's actually pretty good)</h1>
+                <p class="human-win quote">🤖💬 <i>{aiGrumbles()}</i></p>
 				<Celebration />
 			{/if}
 			<button on:click={doneRound}>
