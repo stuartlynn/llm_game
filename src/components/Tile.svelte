@@ -4,16 +4,24 @@
 		file: string;
 		prediction: number;
 		value: number;
-        predictedRank: number; // 0 to 4, 0 = lowest polluation score
-        actualRank: number; // as above
+		predictedRank: number; // 0 to 4, 0 = lowest polluation score
+		actualRank: number; // as above
 		showResult: boolean;
 		showPrediction: boolean;
 	}
 </script>
 
 <script lang="ts">
-	let { file, prediction, value, predictedRank, actualRank, showResult, showPrediction } = $props<TileProps>();
-    let isCorrect = $state(predictedRank === actualRank);
+	let {
+		file,
+		prediction,
+		value,
+		predictedRank,
+		actualRank,
+		showResult,
+		showPrediction,
+		isCorrect
+	} = $props<TileProps>();
 </script>
 
 <div class="tile">
@@ -26,7 +34,9 @@
 				<h2 class="wrong">Wrong</h2>
 			{/if}
 			{#if showPrediction}
-				<p class="my-1"><b>AI's Prediction</b><br />{prediction.toFixed(3)} (#{predictedRank + 1})</p>
+				<p class="my-1">
+					<b>AI's Prediction</b><br />{prediction.toFixed(3)} (#{predictedRank + 1})
+				</p>
 				<p class="my-1"><b>Actual Value</b><br />{value.toFixed(3)} (#{actualRank + 1})</p>
 			{/if}
 		</div>

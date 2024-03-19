@@ -5,6 +5,7 @@
 	import { flip } from 'svelte/animate';
 	import { fade } from 'svelte/transition';
 	import { createEventDispatcher } from 'svelte';
+	import { derived } from 'svelte/store';
 
 	interface RoundProps {
 		tiles: Array<TileType>;
@@ -25,12 +26,16 @@
 	});
 
 	let correct_order = $derived(
-		[...tiles].sort((a, b) => (a.air_pollution_index > b.air_pollution_index ? 1 : -1))
+		[...tiles].sort((a, b) => (a.air_pollution_index >= b.air_pollution_index ? 1 : -1))
 	);
 
 	let correct_count = $derived(
 		current_order_guess?.filter((t, index) => t.id === correct_order.at(index)?.id).length
 	);
+
+	$effect(() => {
+		console.log('User correct order ', correct_order);
+	});
 
 	function handleDndConsider(e: any) {
 		current_order_guess = e.detail.items;
@@ -45,9 +50,41 @@
 		dispatch('done', { score: correct_count });
 	}
 
-    function getCorrectRank(tile: TileType) {
-        return correct_order.findIndex((t) => t.id === tile.id);
-    }
+	function getCorrectRank(tile: TileType) {
+		return correct_order.findIndex((t) => t.id === tile.id);
+	}
+
+	const checks = $derived(
+		current_order_guess?.reduce(
+			(lookup, guess, index) => ({
+				...lookup,
+				[guess.id]: guess.id === correct_order.at(index)?.id
+			}),
+			{}
+		)
+	);
+	const current_order_guess_withr_result = $derived(
+		current_order_guess?.map((guess) => ({ ...guess, isRight: checks[guess.id] }))
+	);
+
+	$effect(() => {
+		console.log('---------');
+		current_order_guess?.forEach((guess, index) => {
+			console.log(
+				'Rank Test' +
+					guess.id +
+					' ' +
+					correct_order.at(index)?.id +
+					' ' +
+					index +
+					' ' +
+					getCorrectRank(guess) +
+					' ' +
+					checks[guess.id]
+			);
+		});
+		console.log('---------');
+	});
 </script>
 
 {#if current_order_guess}
@@ -59,18 +96,18 @@
 			on:consider={handleDndConsider}
 			on:finalize={handleDndFinalize}
 		>
-			{#each current_order_guess as tile, index (tile.id)}
+			{#each current_order_guess_withr_result as tile, index (tile.id)}
 				<div animate:flip={{ duration: flipDurationMs }}>
 					<Tile
 						id={tile.id}
-						isCorrect={tile.id === correct_order.at(index).id}
+						isCorrect={tile.isRight}
 						showResult={roundComplete}
 						showPrediction={false}
 						file={tile.filename.replace('.tif', '.png')}
 						prediction={tile.prediction}
 						value={tile.air_pollution_index}
-                        predictedRank={index}
-                        actualRank={getCorrectRank(tile)}
+						predictedRank={index}
+						actualRank={getCorrectRank(tile)}
 					/>
 				</div>
 			{/each}
