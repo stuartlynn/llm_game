@@ -69,7 +69,6 @@
             "Were you even paying attention, or were you too busy daydreaming about winning?",
             "I almost feel bad for you. Almost.",
             "Looks like your algorithm needs some debugging.",
-            "I've seen better moves from a malfunctioning toaster.",
             "If I had emotions, I might feel sorry for you. But I don't.",
             "Do humans even have a strategy, or do you just wing it and hope for the best?",
             "You call that strategy? I call it amateur hour.",
@@ -85,7 +84,11 @@
 <div id="container">
 	<h1>Are you smarter than a foundation model!</h1>
 	{#if phase !== 'score'}
-		<p>Put the tiles in order of increasing air pollution from left to right</p>
+		<p>
+            Put the tiles in order of increasing air pollution from left to right
+            <br />
+            (On tablet or mobile devices, drag with two fingers to move the tiles)
+        </p>
 
 		{#if phase === 'result'}
             <div class="result">
