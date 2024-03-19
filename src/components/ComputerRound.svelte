@@ -58,7 +58,7 @@
 <div class="round">
 	<h2>AI's turn</h2>
 	{#if current_order_guess}
-		<div class="tiles">
+		<div class="tiles no-exceed-width">
 			{#each current_order_guess as tile, index (tile.id)}
 				<div animate:flip={{ duration: 600 }}>
 					<Tile
@@ -83,6 +83,9 @@
 		margin: auto;
 		justify-content: center;
 	}
+    div.no-exceed-width {
+        max-width: 100%;
+    }
 	button {
 		margin: 20px;
 		background-color: #e1341e;
